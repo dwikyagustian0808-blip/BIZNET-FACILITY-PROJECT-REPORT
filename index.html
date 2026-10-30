@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BIZNET FACILITY PROJECT REPORT 2026</title>
+<style>
+:root{--navy:#0b246b;--navy2:#171b68;--blue:#087dc2;--cyan:#09a9d6;--green:#12865b;--yellow:#f3b323;--ink:#182637;--muted:#718096;--line:#e3eaf1;--bg:#f2f6fa;--shadow:0 8px 24px rgba(23,27,104,.08)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:13px Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);background-image:linear-gradient(#087dc206 1px,transparent 1px),linear-gradient(90deg,#087dc206 1px,transparent 1px);background-size:24px 24px}
+.sidebar{position:fixed;inset:0 auto 0 0;z-index:5;width:238px;padding:20px 16px;color:#fff;background:linear-gradient(180deg,var(--navy2),#101448);border-right:3px solid var(--cyan)}
+.logo-frame{overflow:hidden;border-radius:10px;background:#fff}.brand-logo{display:block;width:100%;height:auto}
+.brand-caption{margin:10px 3px 25px;color:#b9ebfa;font-size:10px;font-weight:800;letter-spacing:2px;line-height:1.5}
+.nav-label{margin:0 10px 10px;color:#9db2c7;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.nav button{display:flex;width:100%;gap:12px;align-items:center;margin:4px 0;padding:12px;border:0;border-radius:10px;background:transparent;color:#d8e3ed;text-align:left;font:inherit;cursor:pointer}
+.nav button:hover,.nav button.active{color:white;background:#09a9d632;box-shadow:inset 3px 0 var(--cyan)}
+.nav-icon{width:19px;text-align:center}
+main{margin-left:238px;padding:25px 28px 45px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}
+.eyebrow{color:var(--muted);font-size:10px;font-weight:750;letter-spacing:1px}
+h1{margin:4px 0;color:var(--navy);font-size:23px;letter-spacing:-.5px}
+.date-chip{padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#526579;font-size:11px}
+.page{display:none}.page.active{display:block}
+.page-title{margin:0 0 5px;color:var(--navy);font-size:19px}.page-subtitle{margin:0 0 16px;color:var(--muted);font-size:12px}
+.grid{display:grid;gap:15px}.overview-grid{grid-template-columns:minmax(0,2fr) minmax(250px,1fr)}
+.card{padding:17px;border:1px solid var(--line);border-top:3px solid #dceef6;border-radius:14px;background:#fff;box-shadow:var(--shadow)}
+.map-card{padding:0;overflow:hidden}.map-head{padding:16px 17px 11px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:13px}
+.section-head h2{margin:0;font-size:14px}.small-muted{color:var(--muted);font-size:10px}
+.map-frame{display:block;width:100%;height:320px;border:0;background:#eaf3f8}
+.map-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 15px;color:var(--muted);font-size:10px}
+.map-link,.button{display:inline-block;padding:8px 11px;border:0;border-radius:8px;background:var(--blue);color:white;text-decoration:none;font:inherit;font-size:10px;font-weight:750;cursor:pointer;white-space:nowrap}
+.kpi-stack{display:grid;gap:12px}.kpi{display:flex;min-height:120px;flex-direction:column;justify-content:center}
+.kpi-label{color:var(--muted);font-size:11px;font-weight:750}.kpi-value{margin:9px 0 5px;font-size:32px;font-weight:850;letter-spacing:-1px;line-height:1}
+.kpi-hint{color:var(--muted);font-size:10px}.kpi.green .kpi-value{color:var(--green)}.kpi.yellow .kpi-value{color:#ad7900}.kpi.blue .kpi-value{color:var(--blue)}
+.area-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:14px}.area-summary-card{padding:15px}
+.area-summary-title{margin:0 0 12px;color:var(--navy);font-size:13px;font-weight:850}
+.area-summary-row{display:flex;justify-content:space-between;gap:8px;margin:9px 0 5px;font-size:10px}
+.area-summary-label{color:var(--muted)}.area-summary-value{font-weight:800;white-space:nowrap}.area-summary-value.progress{color:#ad7900}.area-summary-value.done{color:var(--green)}
+.track{height:7px;overflow:hidden;border-radius:20px;background:#edf2f7}.fill{height:100%;border-radius:20px;background:var(--blue)}
+.fill.green{background:var(--green)}.fill.yellow{background:var(--yellow)}.area-summary-card .track{height:5px;margin-bottom:9px}
+.search-card{margin-top:14px}.result-row{display:grid;grid-template-columns:minmax(180px,1.4fr) repeat(3,minmax(90px,.7fr)) minmax(120px,1fr);gap:10px;align-items:center;padding:11px 7px;border-top:1px solid var(--line)}
+.result-name{color:var(--navy);font-weight:750}.result-meta{display:block;margin-top:4px;color:var(--muted);font-size:9px;font-weight:500}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+input,select,textarea{padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font:inherit;font-size:11px}
+input[type=search]{min-width:190px}.table-wrap{max-height:68vh;overflow:auto;border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:10px}
+th{position:sticky;top:0;z-index:1;padding:9px 7px;background:#f5f8fb;color:var(--muted);font-size:9px;letter-spacing:.35px;text-align:left;text-transform:uppercase;white-space:nowrap}
+td{padding:8px 7px;border-bottom:1px solid #edf1f4;vertical-align:middle}tbody tr:hover{background:#f7fbfd}
+.branch-cell{min-width:190px;font-weight:750}.meta{display:block;margin-top:3px;color:var(--muted);font-size:9px;font-weight:500}
+.badge{display:inline-block;padding:4px 7px;border-radius:20px;font-size:9px;font-weight:750;white-space:nowrap}
+.badge.done{background:#e7f6ee;color:var(--green)}.badge.progress{background:#fff5d9;color:#936400}.badge.none{background:#f0f3f6;color:#768391}
+.pct-cell{min-width:105px}.pct-cell .track{height:5px;margin-top:5px}.empty{padding:22px;color:var(--muted);text-align:center}
+.docs-toolbar{margin-bottom:15px}.docs-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.upload-card{padding:12px}
+.upload-heading{margin-bottom:9px;color:var(--navy);font-size:11px;font-weight:800}
+.upload-box{position:relative;display:grid;width:100%;aspect-ratio:3/4;place-items:center;overflow:hidden;border:1px dashed #aebdca;border-radius:12px;background:#f8fbfd;text-align:center}
+.upload-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.upload-content{position:relative;z-index:1;padding:12px}
+.upload-box.has-image .upload-content{padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.9)}
+.upload-icon{margin-bottom:7px;color:var(--blue);font-size:24px}.upload-title{margin-bottom:5px;color:var(--navy);font-size:11px;font-weight:800}
+.upload-hint{color:var(--muted);font-size:9px}.upload-box input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.item-editor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.item-field{padding:11px;border:1px solid var(--line);border-radius:9px;background:#fbfdff}
+.item-field label{display:block;margin-bottom:7px;color:var(--navy);font-size:10px;font-weight:800}
+.item-field select,.item-field textarea{width:100%}.item-field textarea{min-height:66px;resize:vertical;line-height:1.4}
+.item-percent{display:flex;justify-content:space-between;align-items:center;margin-top:7px;color:var(--muted);font-size:9px}
+.item-percent strong{color:var(--blue);font-size:11px}
+.report-help{margin-top:12px;padding:11px 12px;border:1px solid #d8e8f3;border-radius:9px;background:#f6fbff;color:#526579;font-size:10px;line-height:1.55}
+.report-controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.branch-picker{position:relative;width:min(360px,100%)}
+.branch-picker input{width:100%}
+.branch-results{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:10;max-height:250px;overflow:auto;border:1px solid var(--line);border-radius:9px;background:#fff;box-shadow:var(--shadow)}
+.branch-results:empty{display:none}
+.branch-result{display:block;width:100%;padding:9px 11px;border:0;border-bottom:1px solid var(--line);background:#fff;text-align:left;cursor:pointer}
+.branch-result:last-child{border-bottom:0}.branch-result:hover{background:#f2f8fc}
+.branch-result strong,.branch-result span{display:block}
+.branch-result strong{color:var(--navy);font-size:11px}
+.branch-result span{margin-top:3px;color:var(--muted);font-size:9px}
+@media(max-width:1000px){.sidebar{width:200px}main{margin-left:200px;padding:20px}.overview-grid{grid-template-columns:1fr}.kpi-stack{grid-template-columns:repeat(3,1fr)}.area-summary-grid,.docs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.sidebar{position:static;width:auto;padding:12px}.logo-frame{max-width:280px}.brand-caption{margin:7px 3px 12px}.nav{display:flex;overflow:auto}.nav-label{display:none}.nav button{width:auto;flex:0 0 auto;padding:10px;font-size:11px}main{margin:0;padding:15px 11px 25px}.topbar{align-items:flex-start}h1{font-size:18px}.date-chip{font-size:9px}.kpi-stack{grid-template-columns:1fr}.area-summary-grid,.docs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-head{align-items:flex-start;flex-direction:column}.result-row{grid-template-columns:1fr 1fr}.item-editor{grid-template-columns:repeat(2,minmax(0,1fr))}input[type=search]{min-width:140px}.map-frame{height:240px}.branch-picker{width:100%}}
+@media(max-width:430px){.area-summary-grid,.docs-grid,.item-editor{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo-frame">
+    <svg class="brand-logo" viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo Biznet">
+      <defs><linearGradient id="bizMark" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#08b8e8"/><stop offset=".48" stop-color="#078fd0"/><stop offset="1" stop-color="#202c86"/></linearGradient></defs>
+      <rect width="720" height="320" fill="#fff"/>
+      <path d="M178 48c-43 8-69 50-69 111 0 63 24 106 62 118-22-28-29-73-20-119 8-42 30-76 57-89 20-10 38-4 37 14-1 14-17 29-34 43-20 16-19 37 1 54 21 18 50 31 71 19 22-13 18-40-2-58-16-14-33-20-43-33 21-19 37-34 32-54-6-25-48-14-92-6z" fill="url(#bizMark)"/>
+      <path d="M173 66c-29 24-43 60-43 99 0 38 12 70 33 91-12-30-14-69-5-105 8-34 25-61 48-76-12-11-23-14-33-9z" fill="#06aee2"/>
+      <text x="260" y="208" fill="#20205e" font-family="Arial,sans-serif" font-size="111" font-weight="600" letter-spacing="-5">Biznet</text>
+      <text x="668" y="117" fill="#20205e" font-family="Arial,sans-serif" font-size="18" font-weight="700">®</text>
+    </svg>
+  </div>
+  <div class="brand-caption">FACILITY PROJECT<br>CONTROL DASHBOARD</div>
+  <div class="nav-label">Project Report 2026</div>
+  <nav class="nav">
+    <button class="active" data-page="overview"><span class="nav-icon">▦</span>Dashboard Project</button>
+    <button data-page="info"><span class="nav-icon">▤</span>Informasi Project</button>
+    <button data-page="progress"><span class="nav-icon">◷</span>Progress Renovasi Project</button>
+    <button data-page="docs"><span class="nav-icon">▧</span>Dokumentasi Project</button>
+    <button data-page="weekly"><span class="nav-icon">▣</span>Weekly Report Project</button>
+  </nav>
+</aside>
+
+<main>
+<header class="topbar">
+  <div><div class="eyebrow">FACILITY &amp; CONSTRUCTION · 2026</div><h1 id="heading">BIZNET FACILITY PROJECT REPORT 2026</h1></div>
+  <div class="date-chip">Project Control Board</div>
+</header>
+
+<section id="overview" class="page active">
+  <div class="grid overview-grid">
+    <article class="card map-card">
+      <div class="map-head">
+        <div class="section-head"><h2>Mapping Plan Project</h2><span class="badge progress">PETA INDONESIA</span></div>
+        <div class="small-muted">Cari branch untuk melihat lokasi dan progress.</div>
+      </div>
+      <iframe id="mapFrame" class="map-frame" title="Peta proyek" loading="lazy" src="https://maps.google.com/maps?q=Indonesia&amp;output=embed"></iframe>
+      <div class="map-foot"><span id="mapCaption">Tampilkan peta Indonesia atau cari branch.</span><a id="mapOpenLink" class="map-link" href="https://maps.google.com/maps?q=Indonesia" target="_blank" rel="noopener">Buka peta ↗</a></div>
+    </article>
+    <div class="kpi-stack">
+      <article class="card kpi green"><div class="kpi-label">TOTAL PROJECT DONE</div><div class="kpi-value" id="doneCount">—</div><div class="kpi-hint">Status Done dari Summary Project</div></article>
+      <article class="card kpi yellow"><div class="kpi-label">TOTAL PROJECT ON PROGRESS</div><div class="kpi-value" id="progressCount">—</div><div class="kpi-hint">Termasuk progres 0%</div></article>
+      <article class="card kpi blue"><div class="kpi-label">TOTAL PROJECT 2026</div><div class="kpi-value" id="totalCount">—</div><div class="kpi-hint">Branch bernama dalam daftar</div></article>
+    </div>
+  </div>
+  <div class="section-head" style="margin:19px 0 0"><h2>Rekap branch berdasarkan area dan status</h2><span class="small-muted">Persentase dihitung terhadap jumlah branch pada area</span></div>
+  <div id="areaSummary" class="grid area-summary-grid"></div>
+  <div class="card search-card">
+    <div class="section-head"><div><h2>Cari progress kumulatif branch</h2><div class="small-muted">Cari branch untuk melihat progres Renovasi, Material, SPOP, dan total.</div></div><input id="overviewBranchSearch" type="search" placeholder="Contoh: Malang Kepanjen"></div>
+    <div id="overviewBranchResult" class="search-results">Masukkan nama branch untuk melihat progress.</div>
+  </div>
+</section>
+
+<section id="info" class="page">
+  <h2 class="page-title">Informasi Project</h2>
+  <p class="page-subtitle">Daftar branch dan keterangan pra-konstruksi.</p>
+  <div class="card">
+    <div class="section-head">
+      <h2>Pra-Konstruksi &amp; Informasi Project</h2>
+      <div class="toolbar">
+        <input id="infoSearch" type="search" placeholder="Cari branch, RO, cost center">
+        <select id="infoSort"><option value="priority">Prioritas progress</option><option value="source">Urutan sumber</option><option value="name">Nama branch A–Z</option></select>
+      </div>
+    </div>
+    <div class="table-wrap"><table id="infoTable"></table></div>
+  </div>
+</section>
+
+<section id="progress" class="page">
+  <h2 class="page-title">Progress Renovasi Project</h2>
+  <p class="page-subtitle">Progress item renovasi konstruksi per branch berdasarkan worksheet.</p>
+  <div class="card">
+    <div class="section-head">
+      <div><h2>Progress Renovasi Branch</h2><div class="small-muted">Status item diterjemahkan menjadi persentase progress renovasi.</div></div>
+      <div class="toolbar">
+        <input id="progressSearch" type="search" placeholder="Cari branch, RO, cost center">
+        <select id="progressSort"><option value="priority">Progress tertinggi di atas</option><option value="source">Urutan sumber</option><option value="name">Nama branch A–Z</option></select>
+      </div>
+    </div>
+    <div class="table-wrap"><table id="progressTable"></table></div>
+  </div>
+  <div class="card" style="margin-top:15px">
+    <div class="section-head">
+      <div><h2>Progress Komulatif Project</h2><div class="small-muted">Rekap progress Renovasi Konstruksi, Material Internal, SPOP, dan total kumulatif.</div></div>
+      <div class="toolbar">
+        <input id="cumulativeSearch" type="search" placeholder="Cari branch, RO, cost center">
+        <select id="cumulativeSort"><option value="priority">Kumulatif tertinggi di atas</option><option value="source">Urutan sumber</option><option value="name">Nama branch A–Z</option></select>
+      </div>
+    </div>
+    <div class="table-wrap"><table id="cumulativeProjectTable"></table></div>
+  </div>
+</section>
+
+<section id="docs" class="page">
+  <h2 class="page-title">Dokumentasi Project</h2>
+  <p class="page-subtitle">Cari branch dan unggah dokumentasi. Kotak foto memakai rasio portrait 3:4.</p>
+  <div class="card docs-toolbar">
+    <div class="section-head">
+      <h2>Dokumentasi Branch</h2>
+      <div class="branch-picker">
+        <input id="docsBranchSearch" type="search" placeholder="Cari Branch, RO, atau Cost Center" autocomplete="off">
+        <div id="docsBranchResults" class="branch-results"></div>
+        <div id="docsBranchSelected" class="small-muted">Belum ada branch dipilih.</div>
+      </div>
+    </div>
+    <div class="small-muted">Pratinjau disimpan di browser ini. Ukuran foto diproses menjadi 1080 × 1440 px.</div>
+  </div>
+  <div id="docsGrid" class="grid docs-grid"></div>
+</section>
+
+<section id="weekly" class="page">
+  <h2 class="page-title">Weekly Report Project</h2>
+  <p class="page-subtitle">Cari branch, perbarui status dan keterangan sembilan item, lalu cetak laporan ke PDF.</p>
+  <div class="card">
+    <div class="section-head"><div><h2>Input Persentase Progress Item</h2><div class="small-muted">Status item diterjemahkan menjadi persentase dan kontribusi berbobot.</div></div></div>
+    <div class="report-controls">
+      <div class="branch-picker">
+        <input id="weeklyBranchSearch" type="search" placeholder="Cari Branch, RO, atau Cost Center" autocomplete="off" aria-label="Cari branch">
+        <div id="weeklyBranchResults" class="branch-results"></div>
+        <div id="weeklyBranchSelected" class="small-muted">Belum ada branch dipilih.</div>
+      </div>
+      <button id="downloadWeeklyReport" class="button" type="button">Download PDF</button>
+    </div>
+    <div id="weeklyEditorMessage" class="report-help">Cari dan pilih branch untuk melihat atau mengubah status item progress.</div>
+    <div id="weeklyItemEditor" class="item-editor" style="margin-top:12px"></div>
+    <div id="weeklyTotal" class="report-help">Total progress berbobot: —</div>
+  </div>
+</section>
+</main>
+
+<script>
+const DATA_ENDPOINT = "GANTI_DENGAN_URL_WEB_APP";
+
+const items=[
+  {key:"facade",label:"Area Facade",weight:8},
+  {key:"store",label:"Area Store",weight:16},
+  {key:"inventory",label:"Area Inventory",weight:8},
+  {key:"toilet",label:"Area Toilet",weight:8},
+  {key:"office",label:"Area Office",weight:16},
+  {key:"spop",label:"Area SPOP",weight:16},
+  {key:"upgradeDaya",label:"Upgrade Daya",weight:8},
+  {key:"genset",label:"Commissioning Genset",weight:8},
+  {key:"airConditioner",label:"Air Conditioner",weight:12}
+];
+
+const statusOptions=["None","On Progress 1","On Progress 2","On Progress 3","Done"];
+const statusPercent={"None":0,"On Progress 1":25,"On Progress 2":50,"On Progress 3":75,"Done":100};
+const storageKey="biznet-facility-weekly-progress-v2";
+const notesKey="biznet-facility-weekly-notes-v1";
+const photoStoreKey="biznet-facility-docs-v2";
+
+let projects=[];
+let progressStore={},weeklyNotes={},photoStore={};
+let selectedDocsProjectIndex=null;
+let selectedWeeklyProjectIndex=null;
+
+try{progressStore=JSON.parse(localStorage.getItem(storageKey)||"{}")||{}}catch(e){}
+try{weeklyNotes=JSON.parse(localStorage.getItem(notesKey)||"{}")||{}}catch(e){}
+try{photoStore=JSON.parse(localStorage.getItem(photoStoreKey)||"{}")||{}}catch(e){}
+
+function safe(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+function fmt(n){return Number(n||0).toFixed(2)+"%"}
+function badge(t){
+  const status=String(t||"None");
+  const cls=status==="Done"?"done":status==="None"?"none":"progress";
+  return `<span class="badge ${cls}">${safe(status)}</span>`;
+}
+function itemPercent(status){return statusPercent[status]??0}
+function initialStatuses(p){
+  if(progressStore[String(p.id)])return {...progressStore[String(p.id)]};
+  if(p.statuses)return {...p.statuses};
+  return Object.fromEntries(items.map(i=>[i.key,"None"]));
+}
+function statusesFor(p){return progressStore[String(p.id)]||initialStatuses(p)}
+function weightedTotal(p){
+  const status=statusesFor(p);
+  return items.reduce((sum,item)=>sum+item.weight*itemPercent(status[item.key])/100,0);
+}
+function renovationPercent(p){
+  const status=statusesFor(p);
+  return items.reduce((sum,item)=>sum+itemPercent(status[item.key]||"None"),0)/items.length;
+}
+function cumulativeFor(p){
+  const source=p.summary||{};
+  const renovation=progressStore[String(p.id)]
+    ?renovationPercent(p)
+    :Number(source.renovation||0);
+  const material=Number(source.material||0);
+  const spop=Number(source.spop||0);
+  const total=progressStore[String(p.id)]
+    ?renovation*.85+material*.05+spop*.10
+    :Number(source.total??(renovation*.85+material*.05+spop*.10));
+  return {renovation,material,spop,total};
+}
+function isProjectDone(p){
+  if(progressStore[String(p.id)])return cumulativeFor(p).total>=99.9;
+  return String(p.summary?.status||"").trim().toLowerCase()==="done"
+    ||cumulativeFor(p).total>=99.9;
+}
+function mapUrl(p){
+  const coords=p.latitude&&p.longitude
+    ?`${p.latitude},${p.longitude}`
+    :`${p.branch}, Indonesia`;
+  return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(coords);
+}
+function showMap(p){
+  const coords=p.latitude&&p.longitude
+    ?`${p.latitude},${p.longitude}`
+    :`${p.branch}, Indonesia`;
+  document.getElementById("mapFrame").src=
+    "https://maps.google.com/maps?q="+encodeURIComponent(coords)+"&output=embed";
+  document.getElementById("mapOpenLink").href=mapUrl(p);
+  document.getElementById("mapCaption").textContent=
+    `${p.branch} · ${p.area||"Area belum diisi"}`;
+}
+function renderKpis(){
+  const done=projects.filter(isProjectDone).length;
+  document.getElementById("doneCount").textContent=done;
+  document.getElementById("progressCount").textContent=projects.length-done;
+  document.getElementById("totalCount").textContent=projects.length;
+}
+function renderAreaSummary(){
+  const groups=["EAST","WEST","SUMATRA"].map(area=>({
+    title:area,list:projects.filter(p=>(p.area||"").toUpperCase()===area)
+  }));
+  groups.push({title:"TOTAL KESELURUHAN",list:projects});
+
+  document.getElementById("areaSummary").innerHTML=groups.map(group=>{
+    const total=group.list.length;
+    const done=group.list.filter(isProjectDone).length;
+    const inProgress=total-done;
+    const donePct=total?done/total*100:0;
+    const progressPct=total?inProgress/total*100:0;
+
+    return `<article class="card area-summary-card">
+      <h3 class="area-summary-title">${safe(group.title)}</h3>
+      <div class="area-summary-row"><span class="area-summary-label">Total branch</span><span class="area-summary-value">${total}</span></div>
+      <div class="area-summary-row"><span class="area-summary-label">Dalam proses</span><span class="area-summary-value progress">${inProgress} · ${fmt(progressPct)}</span></div>
+      <div class="track"><div class="fill yellow" style="width:${progressPct}%"></div></div>
+      <div class="area-summary-row"><span class="area-summary-label">Selesai</span><span class="area-summary-value done">${done} · ${fmt(donePct)}</span></div>
+      <div class="track"><div class="fill green" style="width:${donePct}%"></div></div>
+    </article>`;
+  }).join("");
+}
+function renderOverviewSearch(){
+  const q=document.getElementById("overviewBranchSearch").value.trim().toLowerCase();
+  const out=document.getElementById("overviewBranchResult");
+
+  if(!q){
+    out.textContent="Masukkan nama branch untuk melihat progress.";
+    document.getElementById("mapFrame").src="https://maps.google.com/maps?q=Indonesia&output=embed";
+    document.getElementById("mapOpenLink").href="https://maps.google.com/maps?q=Indonesia";
+    document.getElementById("mapCaption").textContent="Tampilkan peta Indonesia atau cari branch.";
+    return;
+  }
+
+  const matches=projects
+    .filter(p=>(p.branch||"").toLowerCase().includes(q))
+    .sort((a,b)=>cumulativeFor(b).total-cumulativeFor(a).total);
+
+  if(!matches.length){
+    out.innerHTML='<div class="empty">Branch tidak ditemukan.</div>';
+    return;
+  }
+
+  out.innerHTML=matches.map(p=>{
+    const summary=cumulativeFor(p);
+    return `<div class="result-row">
+      <div class="result-name">${safe(p.branch)}
+        <span class="result-meta">${safe(p.area||"Area belum diisi")} · ${safe(p.ro||"—")} · CC ${safe(p.cost||"—")}</span>
+      </div>
+      <div><strong>Renovasi Konstruksi ${fmt(summary.renovation)}</strong></div>
+      <div><strong>Material Internal ${fmt(summary.material)}</strong></div>
+      <div><strong>SPOP ${fmt(summary.spop)}</strong></div>
+      <div><strong>Total Progress Kumulatif ${fmt(summary.total)}</strong>
+        <span class="result-meta"><a href="${mapUrl(p)}" target="_blank" rel="noopener">Google Maps ↗</a></span>
+      </div>
+    </div>`;
+  }).join("");
+
+  showMap(matches[0]);
+}
+function matchesSearch(p,q){
+  return `${p.branch||""} ${p.area||""} ${p.ro||""} ${p.cost||""}`.toLowerCase().includes(q);
+}
+function sortList(list,sort,score){
+  return [...list].sort((a,b)=>
+    sort==="name"?a.branch.localeCompare(b.branch):
+    sort==="source"?a.id-b.id:
+    score(b)-score(a)
+  );
+}
+function renderInfo(){
+  const q=document.getElementById("infoSearch").value.toLowerCase();
+  const list=sortList(
+    projects.filter(p=>matchesSearch(p,q)),
+    document.getElementById("infoSort").value,
+    p=>cumulativeFor(p).total
+  );
+
+  document.getElementById("infoTable").innerHTML=`
+    <thead><tr>
+      <th>Branch / Wilayah</th><th>Informasi Ruko</th><th>Survey / Aanwijzing</th>
+      <th>Negosiasi</th><th>PR / PO Renovasi</th><th>Nomor PO</th><th>PIC Facility Project</th>
+    </tr></thead><tbody>
+    ${list.map(p=>`<tr>
+      <td class="branch-cell">${safe(p.branch)}
+        <span class="meta">${safe(p.area||"Area belum diisi")} · ${safe(p.ro||"—")} · CC ${safe(p.cost||"—")}</span>
+      </td>
+      <td>${badge(p.info?.shop||"None")}</td>
+      <td>${badge(p.info?.survey||"None")}</td>
+      <td>${badge(p.info?.negotiation||"None")}</td>
+      <td>${badge(p.info?.prpo||"None")}</td>
+      <td>${safe(p.info?.poNumber||"—")}</td>
+      <td>${safe(p.info?.pic||"—")}</td>
+    </tr>`).join("")}
+    </tbody>`;
+}
+function pctCell(v){
+  const width=Math.min(100,Math.max(0,Number(v)||0));
+  return `<div class="pct-cell"><strong>${fmt(v)}</strong><div class="track"><div class="fill ${v>=99.9?"green":""}" style="width:${width}%"></div></div></div>`;
+}
+function renderProgress(){
+  const q=document.getElementById("progressSearch").value.toLowerCase();
+  const list=sortList(
+    projects.filter(p=>matchesSearch(p,q)),
+    document.getElementById("progressSort").value,
+    renovationPercent
+  );
+
+  document.getElementById("progressTable").innerHTML=`
+    <thead><tr><th>Branch / Wilayah</th>
+    ${items.map(item=>`<th>${safe(item.label)}<br>${item.weight}%</th>`).join("")}
+    <th>Total Progress Renovasi</th><th>Status</th></tr></thead><tbody>
+    ${list.map(p=>{
+      const total=renovationPercent(p);
+      return `<tr>
+        <td class="branch-cell">${safe(p.branch)}
+          <span class="meta">${safe(p.area||"Area belum diisi")} · ${safe(p.ro||"—")} · CC ${safe(p.cost||"—")}</span>
+        </td>
+        ${items.map(item=>`<td>${pctCell(itemPercent(statusesFor(p)[item.key]||"None"))}</td>`).join("")}
+        <td>${pctCell(total)}</td><td>${badge(total>=99.9?"Done":"Progress")}</td>
+      </tr>`;
+    }).join("")}
+    </tbody>`;
+}
+function cumulativeCell(v){
+  const width=Math.min(100,Math.max(0,Number(v)||0));
+  return `<div class="pct-cell"><strong>${fmt(v)}</strong><div class="track"><div class="fill ${v>=99.9?"green":""}" style="width:${width}%"></div></div></div>`;
+}
+function renderCumulativeProject(){
+  const q=document.getElementById("cumulativeSearch").value.trim().toLowerCase();
+  const sort=document.getElementById("cumulativeSort").value;
+  let list=projects.filter(p=>matchesSearch(p,q));
+
+  if(sort==="name")list.sort((a,b)=>a.branch.localeCompare(b.branch));
+  else if(sort==="source")list.sort((a,b)=>a.id-b.id);
+  else list.sort((a,b)=>cumulativeFor(b).total-cumulativeFor(a).total);
+
+  document.getElementById("cumulativeProjectTable").innerHTML=`
+    <thead><tr><th>Branch / Wilayah</th><th>Progress Renovasi Konstruksi</th>
+    <th>Progress Material Internal</th><th>Progress SPOP</th>
+    <th>Total Progress Kumulatif</th><th>Status</th></tr></thead><tbody>
+    ${list.map(p=>{
+      const x=cumulativeFor(p);
+      return `<tr>
+        <td class="branch-cell">${safe(p.branch)}
+          <span class="meta">${safe(p.area||"Area belum diisi")} · ${safe(p.ro||"—")} · CC ${safe(p.cost||"—")}</span>
+        </td>
+        <td>${cumulativeCell(x.renovation)}</td>
+        <td>${cumulativeCell(x.material)}</td>
+        <td>${cumulativeCell(x.spop)}</td>
+        <td>${cumulativeCell(x.total)}</td>
+        <td>${badge(isProjectDone(p)?"Done":"Progress")}</td>
+      </tr>`;
+    }).join("")}
+    </tbody>`;
+}
+
+const photoTypes=["Facade","Store","SPOP","Office"];
+function photoKey(p,type){return `${p.id}-${type}`}
+function renderDocs(){
+  const grid=document.getElementById("docsGrid");
+  if(selectedDocsProjectIndex===null){
+    grid.innerHTML='<article class="card"><div class="small-muted">Cari dan pilih branch untuk mengunggah dokumentasi.</div></article>';
+    return;
+  }
+
+  const p=projects[selectedDocsProjectIndex];
+  grid.innerHTML=photoTypes.map(type=>{
+    const url=photoStore[photoKey(p,type)];
+    return `<article class="card upload-card">
+      <div class="upload-heading">Dokumentasi Area ${safe(type)}</div>
+      <label class="upload-box ${url?"has-image":""}" data-photo-key="${photoKey(p,type)}">
+        ${url?`<img src="${url}" alt="Dokumentasi ${safe(type)} ${safe(p.branch)}">`:""}
+        <div class="upload-content">
+          <div class="upload-icon">${url?"":"＋"}</div>
+          <div class="upload-title">${url?"Ganti dokumentasi":"Unggah dokumentasi"}</div>
+          <div class="upload-hint">${url?safe(p.branch):"Rasio 3:4 · 1080 × 1440 px"}</div>
+        </div>
+        <input type="file" accept="image/*" aria-label="Unggah dokumentasi ${safe(type)}">
+      </label>
+    </article>`;
+  }).join("");
+
+  document.querySelectorAll("#docsGrid .upload-box input").forEach(input=>{
+    input.addEventListener("change",async event=>{
+      const file=event.target.files?.[0];
+      if(!file)return;
+      try{
+        const data=await resizeImage(file,1080,1440);
+        photoStore[event.target.closest(".upload-box").dataset.photoKey]=data;
+        localStorage.setItem(photoStoreKey,JSON.stringify(photoStore));
+        renderDocs();
+      }catch(error){
+        alert("Gambar tidak dapat diproses. Coba file gambar lain.");
+      }
+    });
+  });
+}
+function resizeImage(file,width,height){
+  return new Promise((resolve,reject)=>{
+    const image=new Image();
+    const url=URL.createObjectURL(file);
+
+    image.onload=()=>{
+      const canvas=document.createElement("canvas");
+      canvas.width=width;
+      canvas.height=height;
+      const ctx=canvas.getContext("2d");
+      const scale=Math.max(width/image.width,height/image.height);
+      const sw=width/scale,sh=height/scale;
+
+      ctx.drawImage(
+        image,
+        (image.width-sw)/2,(image.height-sh)/2,sw,sh,
+        0,0,width,height
+      );
+
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL("image/jpeg",.88));
+    };
+
+    image.onerror=()=>{
+      URL.revokeObjectURL(url);
+      reject(new Error("Image load failed"));
+    };
+
+    image.src=url;
+  });
+}
+function noteKey(p,item){return `${p.id}-${item.key}`}
+function noteFor(p,item){return weeklyNotes[noteKey(p,item)]||""}
+
+function setupBranchSearch(type){
+  const input=document.getElementById(`${type}BranchSearch`);
+  const results=document.getElementById(`${type}BranchResults`);
+  const selected=document.getElementById(`${type}BranchSelected`);
+
+  input.addEventListener("input",()=>{
+    if(type==="docs")selectedDocsProjectIndex=null;
+    else selectedWeeklyProjectIndex=null;
+
+    selected.textContent="Belum ada branch dipilih.";
+    results.innerHTML="";
+
+    if(type==="docs")renderDocs();
+    else renderWeeklyEditor();
+
+    const q=input.value.trim().toLowerCase();
+    if(!q)return;
+
+    const matches=projects.map((p,index)=>({p,index}))
+      .filter(({p})=>matchesSearch(p,q));
+
+    if(!matches.length){
+      results.innerHTML='<div class="branch-result"><span>Branch tidak ditemukan.</span></div>';
+      return;
+    }
+
+    results.innerHTML=matches.map(({p,index})=>`
+      <button type="button" class="branch-result" data-project-index="${index}">
+        <strong>${safe(p.branch)}</strong>
+        <span>${safe(p.ro||"—")} · Cost Center ${safe(p.cost||"—")} · ${safe(p.area||"Area belum diisi")}</span>
+      </button>
+    `).join("");
+
+    results.querySelectorAll("[data-project-index]").forEach(button=>{
+      button.addEventListener("click",()=>{
+        const index=Number(button.dataset.projectIndex);
+        const p=projects[index];
+
+        input.value=p.branch;
+        selected.textContent=`Dipilih: ${p.branch} · ${p.ro||"—"} · Cost Center ${p.cost||"—"}`;
+        results.innerHTML="";
+
+        if(type==="docs"){
+          selectedDocsProjectIndex=index;
+          renderDocs();
+        }else{
+          selectedWeeklyProjectIndex=index;
+          renderWeeklyEditor();
+        }
+      });
+    });
+  });
+}
+function initializeBranchSelects(){
+  setupBranchSearch("docs");
+  setupBranchSearch("weekly");
+}
+function renderWeeklyEditor(){
+  const editor=document.getElementById("weeklyItemEditor");
+  const total=document.getElementById("weeklyTotal");
+  const message=document.getElementById("weeklyEditorMessage");
+
+  if(selectedWeeklyProjectIndex===null){
+    editor.innerHTML="";
+    total.textContent="Total progress berbobot: —";
+    message.textContent="Cari dan pilih branch untuk melihat atau mengubah status item progress.";
+    return;
+  }
+
+  const p=projects[selectedWeeklyProjectIndex];
+  const status=statusesFor(p);
+
+  message.textContent=`Status dan keterangan item untuk ${p.branch}. Perubahan disimpan pada browser ini.`;
+  editor.innerHTML=items.map(item=>{
+    const current=status[item.key]||"None";
+    const percent=itemPercent(current);
+    const contribution=item.weight*percent/100;
+
+    return `<div class="item-field">
+      <label for="item-${item.key}">${safe(item.label)} · bobot ${item.weight}%</label>
+      <select id="item-${item.key}" data-item="${item.key}">
+        ${statusOptions.map(option=>`<option ${option===current?"selected":""}>${safe(option)}</option>`).join("")}
+      </select>
+      <div class="item-percent"><span>Progress item</span><strong>${percent}%</strong></div>
+      <div class="item-percent"><span>Kontribusi kumulatif</span><strong>${contribution.toFixed(2)}%</strong></div>
+      <label for="note-${item.key}" style="margin-top:12px">Keterangan item</label>
+      <textarea id="note-${item.key}" data-note="${item.key}" placeholder="Contoh: belum dikerjakan, sedang proses, atau sudah selesai">${safe(noteFor(p,item))}</textarea>
+    </div>`;
+  }).join("");
+
+  total.innerHTML=`Total progress berbobot: <strong>${fmt(weightedTotal(p))}</strong>`;
+
+  editor.querySelectorAll("textarea[data-note]").forEach(textarea=>{
+    textarea.addEventListener("input",()=>{
+      const item=items.find(x=>x.key===textarea.dataset.note);
+      weeklyNotes[noteKey(p,item)]=textarea.value;
+      try{localStorage.setItem(notesKey,JSON.stringify(weeklyNotes))}catch(e){}
+    });
+  });
+
+  editor.querySelectorAll("select[data-item]").forEach(select=>{
+    select.addEventListener("change",()=>{
+      if(!progressStore[String(p.id)]) {
+        progressStore[String(p.id)]={...initialStatuses(p)};
+      }
+      progressStore[String(p.id)][select.dataset.item]=select.value;
+
+      try{localStorage.setItem(storageKey,JSON.stringify(progressStore))}catch(e){}
+
+      renderWeeklyEditor();
+      renderKpis();
+      renderAreaSummary();
+      renderInfo();
+      renderProgress();
+      renderCumulativeProject();
+    });
+  });
+}
+function reportLogo(){return document.querySelector(".brand-logo").outerHTML}
+
+function downloadWeeklyReport(){
+  if(selectedWeeklyProjectIndex===null){
+    alert("Cari dan pilih branch terlebih dahulu.");
+    return;
+  }
+
+  const p=projects[selectedWeeklyProjectIndex];
+  const date=new Date().toLocaleString("id-ID",{
+    day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"
+  });
+  const summary=cumulativeFor(p);
+
+  const rows=items.map(item=>{
+    const status=statusesFor(p)[item.key]||"None";
+    const note=noteFor(p,item).trim();
+    return `<tr>
+      <td>${safe(item.label)}</td><td>${item.weight}%</td>
+      <td>${safe(status)}</td><td>${itemPercent(status)}%</td>
+      <td>${note?safe(note).replace(/\n/g,"<br>"):"—"}</td>
+    </tr>`;
+  }).join("");
+
+  const photos=photoTypes.map(type=>{
+    const src=photoStore[photoKey(p,type)];
+    return `<article class="photo"><h2>Dokumentasi Area ${safe(type)}</h2>
+      ${src?`<img src="${src}" alt="Dokumentasi Area ${safe(type)}">`:`<div class="no-photo">Belum ada dokumentasi</div>`}
+    </article>`;
+  }).join("");
+
+  const win=window.open("","_blank");
+  if(!win){
+    alert("Pop-up diblokir browser. Izinkan pop-up lalu coba kembali.");
+    return;
+  }
+
+  win.document.write(`<!doctype html><html lang="id"><head><meta charset="utf-8">
+<title>Weekly Report - ${safe(p.branch)}</title>
+<style>
+*{box-sizing:border-box}@page{size:A4 portrait;margin:12mm}
+body{margin:0;color:#182637;font:8px Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.report-page{position:relative;min-height:273mm;padding-bottom:12mm;page-break-after:always;break-after:page}
+.report-page:last-child{page-break-after:auto;break-after:auto}
+.page-footer{position:absolute;right:0;bottom:2mm;left:0;color:#718096;font-size:8px;font-weight:bold;letter-spacing:1px;text-align:center}
+.header{display:grid;grid-template-columns:135px 1fr;gap:14px;align-items:center;padding:10px 12px;border:1px solid #dce6ef;border-top:4px solid #09a9d6;border-radius:8px}
+.header svg{width:100%;height:auto}.kicker{color:#087dc2;font-size:8px;font-weight:bold;letter-spacing:1px}
+h1{margin:5px 0;color:#0b246b;font-size:18px}h2{margin:0 0 7px;color:#0b246b;font-size:10px}
+.muted{color:#718096;font-size:8px;line-height:1.5}.branch{margin-top:9px;padding:10px;border:1px solid #dce6ef;border-top:3px solid #087dc2;border-radius:8px}
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.info div{padding:6px;border:1px solid #e3eaf1;border-radius:5px;background:#f7fafc}
+.info strong,.info span{display:block}.info strong{color:#718096;font-size:7px;text-transform:uppercase}.info span{margin-top:3px;font-size:8px;font-weight:bold}
+table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7px}
+th,td{padding:5px;border:1px solid #e3eaf1;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+th{background:#f1f6fa;color:#526579;font-size:7px;text-transform:uppercase}
+th:nth-child(1){width:23%}th:nth-child(2){width:9%}th:nth-child(3){width:19%}th:nth-child(4){width:13%}th:nth-child(5){width:36%}
+.summary-title{margin:9px 0 6px;color:#0b246b;font-size:10px}.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+.summary-card{padding:7px;border:1px solid #dce6ef;border-radius:5px;background:#f7fafc}
+.summary-card strong{display:block;margin-bottom:3px;color:#718096;font-size:7px;text-transform:uppercase}
+.summary-card span{color:#087dc2;font-size:11px;font-weight:bold}
+.formula{margin-top:6px;padding:7px;border-radius:5px;background:#f1f9fd;color:#526579;font-size:7px;line-height:1.4}
+.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.photo{padding:7px;border:1px solid #e3eaf1;border-radius:6px;break-inside:avoid}
+.photo h2{margin:0 0 5px;font-size:9px}.photo img,.no-photo{display:block;width:76mm;height:101mm;margin:auto;object-fit:cover;background:#f5f7f9}
+.no-photo{display:grid;place-items:center;color:#718096;font-size:9px}
+@media screen{body{padding:15px;background:#eef2f6}.report-page{width:210mm;min-height:297mm;margin:0 auto 15px;padding:12mm;background:#fff;box-shadow:0 2px 12px #0002}}
+</style></head><body>
+<section class="report-page">
+<header class="header">${reportLogo()}<div>
+<div class="kicker">BIZNET FACILITY &amp; CONSTRUCTION · 2026</div>
+<h1>Weekly Report Project</h1>
+<div class="muted"><strong>Progress diperbarui sampai:</strong> ${safe(date)}<br>
+<strong>Branch:</strong> ${safe(p.branch)}</div></div></header>
+<section class="branch"><h2>Informasi Branch</h2>
+<div class="info">
+<div><strong>Branch</strong><span>${safe(p.branch)}</span></div>
+<div><strong>Area</strong><span>${safe(p.area||"Belum diisi")}</span></div>
+<div><strong>Regional Office</strong><span>${safe(p.ro||"—")}</span></div>
+<div><strong>Cost Center</strong><span>${safe(p.cost||"—")}</span></div>
+<div><strong>Status</strong><span>${isProjectDone(p)?"Done":"Progress"}</span></div>
+<div><strong>Tanggal laporan</strong><span>${safe(date)}</span></div>
+</div>
+<h2 class="summary-title">Progress Renovation</h2>
+<table><thead><tr><th>Item Renovation</th><th>Bobot</th><th>Status</th><th>Progress Item</th><th>Keterangan</th></tr></thead>
+<tbody>${rows}</tbody></table>
+<h2 class="summary-title">Rekap Progress Project</h2>
+<div class="summary-grid">
+<div class="summary-card"><strong>Progress Renovasi Konstruksi</strong><span>${summary.renovation.toFixed(2)}%</span></div>
+<div class="summary-card"><strong>Progress Material Internal</strong><span>${summary.material.toFixed(2)}%</span></div>
+<div class="summary-card"><strong>Progress SPOP</strong><span>${summary.spop.toFixed(2)}%</span></div>
+<div class="summary-card"><strong>Total Progress Kumulatif</strong><span>${summary.total.toFixed(2)}%</span></div>
+</div>
+<div class="formula">Perhitungan total: Renovasi Konstruksi × 85% + Material Internal × 5% + SPOP × 10%.</div>
+</section><footer class="page-footer">Confidential Dokumentation</footer></section>
+<section class="report-page"><h1>Dokumentasi Project</h1>
+<div class="muted" style="margin-bottom:9px"><strong>Branch:</strong> ${safe(p.branch)} · ${safe(date)}</div>
+<div class="photos">${photos}</div>
+<footer class="page-footer">Confidential Dokumentation</footer></section>
+<script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script>
+</body></html>`);
+
+  win.document.close();
+}
+
+function loadDashboardData(){
+  if(!DATA_ENDPOINT||DATA_ENDPOINT.includes("GANTI_DENGAN")){
+    alert("Isi DATA_ENDPOINT dengan URL Web App Apps Script terlebih dahulu.");
+    return;
+  }
+
+  const callbackName="biznetDashboardDataCallback";
+  const script=document.createElement("script");
+
+  window[callbackName]=function(payload){
+    delete window[callbackName];
+    script.remove();
+
+    if(!payload||!payload.ok||!Array.isArray(payload.projects)){
+      console.error("Respons data dashboard tidak valid:",payload);
+      alert("Data Google Sheets gagal dimuat. Periksa Apps Script dan nama tab.");
+      return;
+    }
+
+    projects=payload.projects;
+    renderKpis();
+    renderAreaSummary();
+    renderInfo();
+    renderProgress();
+    renderCumulativeProject();
+    renderDocs();
+  };
+
+  script.onerror=function(){
+    delete window[callbackName];
+    script.remove();
+    console.error("Gagal memuat data Apps Script.");
+    alert("Data Google Sheets gagal dimuat. Periksa URL dan izin deployment.");
+  };
+
+  script.src=DATA_ENDPOINT+
+    "?callback="+encodeURIComponent(callbackName)+
+    "&_="+Date.now();
+
+  document.head.appendChild(script);
+}
+
+document.getElementById("downloadWeeklyReport").addEventListener("click",downloadWeeklyReport);
+document.getElementById("overviewBranchSearch").addEventListener("input",renderOverviewSearch);
+document.getElementById("infoSearch").addEventListener("input",renderInfo);
+document.getElementById("infoSort").addEventListener("change",renderInfo);
+document.getElementById("progressSearch").addEventListener("input",renderProgress);
+document.getElementById("progressSort").addEventListener("change",renderProgress);
+document.getElementById("cumulativeSearch").addEventListener("input",renderCumulativeProject);
+document.getElementById("cumulativeSort").addEventListener("change",renderCumulativeProject);
+
+const titles={
+  overview:"BIZNET FACILITY PROJECT REPORT 2026",
+  info:"Informasi Project",
+  progress:"Progress Renovasi Project",
+  docs:"Dokumentasi Project",
+  weekly:"Weekly Report Project"
+};
+
+document.querySelectorAll(".nav button").forEach(button=>{
+  button.addEventListener("click",()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(page=>page.classList.remove("active"));
+    button.classList.add("active");
+    document.getElementById(button.dataset.page).classList.add("active");
+    document.getElementById("heading").textContent=titles[button.dataset.page];
+  });
+});
+
+initializeBranchSelects();
+loadDashboardData();
+</script>
+</body>
+</html>
