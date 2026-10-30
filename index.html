@@ -58,6 +58,11 @@ td{padding:8px 7px;border-bottom:1px solid #edf1f4;vertical-align:middle}tbody t
 .upload-box.has-image .upload-content{padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.9)}
 .upload-icon{margin-bottom:7px;color:var(--blue);font-size:24px}.upload-title{margin-bottom:5px;color:var(--navy);font-size:11px;font-weight:800}
 .upload-hint{color:var(--muted);font-size:9px}.upload-box input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.drive-actions{display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.drive-btn{display:inline-block;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--blue);font:inherit;font-size:9px;font-weight:750;cursor:pointer;text-decoration:none;white-space:nowrap}
+.drive-btn:disabled{opacity:.6;cursor:default}
+.drive-status{font-size:9px;color:var(--muted)}
+.drive-status.ok{color:var(--green)}.drive-status.error{color:#c0392b}
 .item-editor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .item-field{padding:11px;border:1px solid var(--line);border-radius:9px;background:#fbfdff}
 .item-field label{display:block;margin-bottom:7px;color:var(--navy);font-size:10px;font-weight:800}
@@ -175,7 +180,7 @@ td{padding:8px 7px;border-bottom:1px solid #edf1f4;vertical-align:middle}tbody t
 
 <section id="docs" class="page">
   <h2 class="page-title">Dokumentasi Project</h2>
-  <p class="page-subtitle">Cari branch dan unggah dokumentasi. Kotak foto memakai rasio portrait 3:4.</p>
+  <p class="page-subtitle">Cari branch dan unggah dokumentasi. Foto 3:4 diproses 1080 × 1440 px lalu diunggah ke Google Drive.</p>
   <div class="card docs-toolbar">
     <div class="section-head">
       <h2>Dokumentasi Branch</h2>
@@ -185,7 +190,10 @@ td{padding:8px 7px;border-bottom:1px solid #edf1f4;vertical-align:middle}tbody t
         <div id="docsBranchSelected" class="small-muted">Belum ada branch dipilih.</div>
       </div>
     </div>
-    <div class="small-muted">Pratinjau disimpan di browser ini. Ukuran foto diproses menjadi 1080 × 1440 px.</div>
+    <div class="drive-actions">
+      <button id="syncDriveBtn" class="drive-btn" type="button">⟳ Muat dari Google Drive</button>
+      <span id="syncDriveStatus" class="drive-status">Pratinjau disimpan di browser; foto otomatis diunggah ke folder Google Drive project.</span>
+    </div>
   </div>
   <div id="docsGrid" class="grid docs-grid"></div>
 </section>
@@ -211,7 +219,8 @@ td{padding:8px 7px;border-bottom:1px solid #edf1f4;vertical-align:middle}tbody t
 </main>
 
 <script>
-const DATA_ENDPOINT = "https://script.google.com/macros/s/AKfycbzD879N2NPX4f9Z9mo1wksCDG_1aTFoVmRrMFBvc8965hlfGwYQlDvGN0Xm_20iJ6SCAw/exec";
+const DATA_ENDPOINT = "https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQgUjf-dU2RM3lebW85tg1x7l0Vlh9MhxQTYzxl1WViiKA9j2w0NaObJ6YACAvpm8t-MapevY0li8ya2i2u-WDS0VK7wiZNuBnOu5KyuA5v9r4ddMmvqJxZk7dJfROPbJMC7tgJ86w2vpOscnRnfF7QS0f4lPm9SpdSfQ4NkuyfPpjhuBbNjufwL3k-0ie8HLwAD7U74os5lI8cr5dHgM2426fJRrqdMNxqo6MToCyNBbyT0KF4yxDytaYJy-ery6NbLQVivi_JF-zqFUdeidvg3FnxbA&lib=MXW3dzNcV-xImqxCLlhJuqnoB8p3vPWnT";
+const DRIVE_UPLOAD_TOKEN = "gatq3myIi4qqdH0aIsrzZqzmj7inOiQ2vabbRo5D";
 
 const items=[
   {key:"facade",label:"Area Facade",weight:8},
@@ -230,15 +239,17 @@ const statusPercent={"None":0,"On Progress 1":25,"On Progress 2":50,"On Progress
 const storageKey="biznet-facility-weekly-progress-v2";
 const notesKey="biznet-facility-weekly-notes-v1";
 const photoStoreKey="biznet-facility-docs-v2";
+const driveStoreKey="biznet-facility-docs-drive-v1";
 
 let projects=[];
-let progressStore={},weeklyNotes={},photoStore={};
+let progressStore={},weeklyNotes={},photoStore={},driveStore={};
 let selectedDocsProjectIndex=null;
 let selectedWeeklyProjectIndex=null;
 
 try{progressStore=JSON.parse(localStorage.getItem(storageKey)||"{}")||{}}catch(e){}
 try{weeklyNotes=JSON.parse(localStorage.getItem(notesKey)||"{}")||{}}catch(e){}
 try{photoStore=JSON.parse(localStorage.getItem(photoStoreKey)||"{}")||{}}catch(e){}
+try{driveStore=JSON.parse(localStorage.getItem(driveStoreKey)||"{}")||{}}catch(e){}
 
 function safe(v){
   return String(v??"").replace(/[&<>"']/g,c=>({
@@ -465,6 +476,11 @@ function renderCumulativeProject(){
 
 const photoTypes=["Facade","Store","SPOP","Office"];
 function photoKey(p,type){return `${p.id}-${type}`}
+function photoSrcFor(p,type){
+  return photoStore[photoKey(p,type)]
+    ||driveStore[photoKey(p,type)]?.thumb
+    ||"";
+}
 function renderDocs(){
   const grid=document.getElementById("docsGrid");
   if(selectedDocsProjectIndex===null){
@@ -474,11 +490,16 @@ function renderDocs(){
 
   const p=projects[selectedDocsProjectIndex];
   grid.innerHTML=photoTypes.map(type=>{
-    const url=photoStore[photoKey(p,type)];
+    const key=photoKey(p,type);
+    const local=photoStore[key];
+    const drive=driveStore[key];
+    const url=local||drive?.thumb||"";
+    const status=drive?"Tersimpan di Google Drive":local?"Belum diunggah ke Drive":"—";
+
     return `<article class="card upload-card">
       <div class="upload-heading">Dokumentasi Area ${safe(type)}</div>
-      <label class="upload-box ${url?"has-image":""}" data-photo-key="${photoKey(p,type)}">
-        ${url?`<img src="${url}" alt="Dokumentasi ${safe(type)} ${safe(p.branch)}">`:""}
+      <label class="upload-box ${url?"has-image":""}" data-photo-key="${key}" data-area="${safe(type)}">
+        ${url?`<img src="${safe(url)}" alt="Dokumentasi ${safe(type)} ${safe(p.branch)}">`:""}
         <div class="upload-content">
           <div class="upload-icon">${url?"":"＋"}</div>
           <div class="upload-title">${url?"Ganti dokumentasi":"Unggah dokumentasi"}</div>
@@ -486,6 +507,11 @@ function renderDocs(){
         </div>
         <input type="file" accept="image/*" aria-label="Unggah dokumentasi ${safe(type)}">
       </label>
+      <div class="drive-actions">
+        ${local&&!drive?`<button type="button" class="drive-btn" data-drive-upload="${key}" data-area="${safe(type)}">⬆ Upload ke Drive</button>`:""}
+        ${drive?`<a class="drive-btn" href="${safe(drive.url)}" target="_blank" rel="noopener">Lihat di Drive ↗</a>`:""}
+        <span class="drive-status ${drive?"ok":""}" data-drive-status="${key}">${status}</span>
+      </div>
     </article>`;
   }).join("");
 
@@ -495,14 +521,138 @@ function renderDocs(){
       if(!file)return;
       try{
         const data=await resizeImage(file,1080,1440);
-        photoStore[event.target.closest(".upload-box").dataset.photoKey]=data;
+        const label=event.target.closest(".upload-box");
+        photoStore[label.dataset.photoKey]=data;
         localStorage.setItem(photoStoreKey,JSON.stringify(photoStore));
         renderDocs();
+        uploadToDrive(p,label.dataset.area);
       }catch(error){
         alert("Gambar tidak dapat diproses. Coba file gambar lain.");
       }
     });
   });
+
+  document.querySelectorAll("#docsGrid [data-drive-upload]").forEach(button=>{
+    button.addEventListener("click",()=>uploadToDrive(p,button.dataset.area));
+  });
+}
+async function uploadToDrive(p,type){
+  if(!DATA_ENDPOINT||DATA_ENDPOINT.includes("GANTI_DENGAN")){
+    alert("Isi DATA_ENDPOINT dan DRIVE_UPLOAD_TOKEN terlebih dahulu.");
+    return;
+  }
+
+  const key=photoKey(p,type);
+  const dataUrl=photoStore[key];
+  if(!dataUrl){alert("Unggah foto terlebih dahulu.");return}
+
+  const statusEl=document.querySelector(`[data-drive-status="${key}"]`);
+  const setStatus=(text,cls)=>{
+    if(statusEl){statusEl.textContent=text;statusEl.className="drive-status "+(cls||"")}
+  };
+
+  setStatus("Mengunggah ke Google Drive…");
+
+  try{
+    const response=await fetch(DATA_ENDPOINT,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify({
+        token:DRIVE_UPLOAD_TOKEN,
+        branch:p.branch,
+        area:type,
+        ro:p.ro||"",
+        cost:p.cost||"",
+        dataUrl:dataUrl
+      })
+    });
+
+    const text=await response.text();
+    let payload;
+    try{payload=JSON.parse(text)}
+    catch(e){throw new Error("Respons server tidak valid")}
+
+    if(!payload.ok)throw new Error(payload.error||"Upload gagal");
+
+    driveStore[key]={
+      id:payload.fileId,
+      url:payload.url,
+      thumb:payload.thumbnail,
+      name:payload.name,
+      at:payload.uploadedAt
+    };
+    localStorage.setItem(driveStoreKey,JSON.stringify(driveStore));
+    renderDocs();
+  }catch(error){
+    setStatus("Upload gagal: "+error.message,"error");
+  }
+}
+function syncFromDrive(){
+  if(!DATA_ENDPOINT||DATA_ENDPOINT.includes("GANTI_DENGAN")){
+    alert("Isi DATA_ENDPOINT dengan URL Web App Apps Script terlebih dahulu.");
+    return;
+  }
+
+  const statusEl=document.getElementById("syncDriveStatus");
+  statusEl.textContent="Memuat daftar foto dari Google Drive…";
+  statusEl.className="drive-status";
+
+  const callbackName="biznetDrivePhotosCallback";
+  const script=document.createElement("script");
+
+  window[callbackName]=function(payload){
+    delete window[callbackName];
+    script.remove();
+
+    if(!payload||!payload.ok||!Array.isArray(payload.photos)){
+      statusEl.textContent="Gagal memuat: "+(payload?.error||"respons tidak valid");
+      statusEl.className="drive-status error";
+      return;
+    }
+
+    let matched=0;
+    payload.photos.forEach(photo=>{
+      const p=projects.find(x=>
+        normalizeName(x.branch)===normalizeName(photo.branch)
+      );
+      if(!p||!photo.area)return;
+
+      const key=photoKey(p,photo.area);
+      if(!driveStore[key]){
+        driveStore[key]={
+          id:photo.fileId,
+          url:photo.url,
+          thumb:photo.thumbnail,
+          name:photo.name,
+          at:photo.uploadedAt
+        };
+        matched++;
+      }
+    });
+
+    localStorage.setItem(driveStoreKey,JSON.stringify(driveStore));
+    renderDocs();
+    statusEl.textContent=matched
+      ?`${matched} foto dimuat dari Google Drive.`
+      :"Semua foto Google Drive sudah tampil.";
+    statusEl.className="drive-status ok";
+  };
+
+  script.onerror=function(){
+    delete window[callbackName];
+    script.remove();
+    statusEl.textContent="Gagal memuat dari Google Drive.";
+    statusEl.className="drive-status error";
+  };
+
+  script.src=DATA_ENDPOINT+
+    "?callback="+encodeURIComponent(callbackName)+
+    "&action=photos&_="+Date.now();
+
+  document.head.appendChild(script);
+}
+function normalizeName(value){
+  return String(value||"").trim().replace(/\s+/g," ").toLowerCase();
 }
 function resizeImage(file,width,height){
   return new Promise((resolve,reject)=>{
@@ -681,9 +831,9 @@ function downloadWeeklyReport(){
   }).join("");
 
   const photos=photoTypes.map(type=>{
-    const src=photoStore[photoKey(p,type)];
+    const src=photoSrcFor(p,type);
     return `<article class="photo"><h2>Dokumentasi Area ${safe(type)}</h2>
-      ${src?`<img src="${src}" alt="Dokumentasi Area ${safe(type)}">`:`<div class="no-photo">Belum ada dokumentasi</div>`}
+      ${src?`<img src="${safe(src)}" alt="Dokumentasi Area ${safe(type)}">`:`<div class="no-photo">Belum ada dokumentasi</div>`}
     </article>`;
   }).join("");
 
@@ -809,6 +959,7 @@ document.getElementById("progressSearch").addEventListener("input",renderProgres
 document.getElementById("progressSort").addEventListener("change",renderProgress);
 document.getElementById("cumulativeSearch").addEventListener("input",renderCumulativeProject);
 document.getElementById("cumulativeSort").addEventListener("change",renderCumulativeProject);
+document.getElementById("syncDriveBtn").addEventListener("click",syncFromDrive);
 
 const titles={
   overview:"BIZNET FACILITY PROJECT REPORT 2026",
